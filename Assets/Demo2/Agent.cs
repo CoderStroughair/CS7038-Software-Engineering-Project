@@ -16,11 +16,6 @@ public class Agent {
 
     public Identity identity;
 
-    public static Agent CreateFromJSON(string jsonString)
-    {
-        return JsonUtility.FromJson<Agent>(jsonString);
-    }
-
     public void setEnums()
     {
         identity.setEnums();
@@ -32,18 +27,21 @@ public class Agent {
     }
 
     int id;
-
     private FSM<Agent> stateMachine;
-
     public List<int> followingList;
-
     List<int> tweetMade;
     List<int> readTweets;
-    //fixed
-    int age;
-    eGender gender;
 
     //variables
+
+    static NameDatabase names;
+
+    static Agent()
+    {
+        TextAsset asset = Resources.Load("names") as TextAsset;
+        Debug.Log(asset);
+        names = JsonUtility.FromJson<NameDatabase>(asset.text);
+    }
 
     public Agent(int _id)
     {
@@ -62,12 +60,13 @@ public class Agent {
 
         identity.g = eGender.FEMALE;
 
-        if(identity.g == eGender.MALE) {
-            //read a csv files and randomize from the files
-            name = "Max";
+        if(identity.g == eGender.MALE)
+        {
+            name = Agent.names.male[0];
         }
-        else{
-            name = "Maxiee";
+        else
+        {
+            name = Agent.names.female[0];
         }
             
         identity.r = eReligion.JEWISH;
@@ -183,4 +182,11 @@ public class Identity
         politics = p.ToString();
         nationality = n.ToString();
     }
+}
+
+[Serializable]
+public class NameDatabase
+{
+    public List<String> male;
+    public List<String> female;
 }
