@@ -1,0 +1,39 @@
+{
+	"agents": [{
+		"personality": [0, 0, 0, 0, 0],
+		"following": [0],
+		"name": "Test",
+		"tweetsMade": [0],
+		"tweetsRead": [0],
+		"identity": {
+			"pref_religion": [0],
+			"pref_ethnicity": [0],
+			"pref_gender": [0, 0],
+			"pref_class": [0, 0, 0],
+			"pref_nationality": [0],
+			"pref_political": [0],
+			"nationality": "SPANISH",
+			"gender": "MALE",
+			"religion": "CHRISTIAN",
+			"politics": "LIBERAL"
+		}
+	}, {
+		"personality": [0, 0, 0, 0, 0],
+		"following": [0],
+		"name": "Test",
+		"tweetsMade": [0],
+		"tweetsRead": [0],
+		"identity": {
+			"pref_religion": [0],
+			"pref_ethnicity": [0],
+			"pref_gender": [0, 0],
+			"pref_class": [0, 0, 0],
+			"pref_nationality": [0],
+			"pref_political": [0],
+			"nationality": "SPANISH",
+			"gender": "FEMALE",
+			"religion": "CHRISTIAN",
+			"politics": "LIBERAL"
+		}
+	}]
+}

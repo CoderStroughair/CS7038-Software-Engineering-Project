@@ -1,0 +1,24 @@
+{
+	"tweet" : 
+	[
+        {
+			"likes" : 0,
+			"text" : " ",
+			"posterIndex" : 0,
+			"Hashtags" : [" ", " "],
+			"tagged" : [0,0],
+			"identity" : {
+				"pref_religion" : [0],
+				"pref_ethnicity"[0],
+				"pref_gender"[0,0],
+				"pref_class"[0,0,0],
+				"pref_nationality"[0],
+				"pref_political"[0],
+				"eNationality" : "",
+				"eGender" : "",
+				"eRelgion" : "",
+				"ePolitical" : ""			
+			}
+        }
+	]
+}
