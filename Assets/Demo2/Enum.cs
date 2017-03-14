@@ -5,24 +5,24 @@ using System.Linq;
 using System.Text;
 public enum eClass
 {
-    low,
-    middle,
-    high
+    LOW,
+    MIDDLE,
+    HIGH
 }
 
 
 public enum eRace
 {
-    caucasian,
-    negroid,
-    asian,
-    middleeastern,
-    none
+    WHITE,
+    BLACK,
+    ASIAN,
+    HISPANIC,
+    OTHER
 }
 
 public enum eReligion
 {
-    CHRISTIAN, MUSLIM, JEWISH, BUDDHA, HINDU
+    CHRISTIAN, MUSLIM, HINDU, JEWISH, BUDDHA, OTHER,ATHEIST
 }
 public enum eGender
 {
@@ -34,5 +34,5 @@ public enum ePolitics
 }
 public enum eNationality
 {
-    AMERICAN, BRITISH, SPANISH, CHINESE, IRISH, INDIAN, MALAYSIAN, FRENCH, KAZAKHSTANI
+    AMERICAN, MEXICAN, INDIAN, CHINESE, CANADIAN, GERMAN, BRITISH, IRISH, FRENCH, SPANISH, AFRICAN, MALAYSIAN, KAZAKHSTANI
 }
