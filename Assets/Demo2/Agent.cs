@@ -7,6 +7,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 [Serializable]
 public class Agent {
+    
 
     public float[] personality;
     public int[] following;
@@ -65,7 +66,10 @@ public class Agent {
 	
     public Agent(int _id)
     {
+        int MAX_FOLLOWERS = 100;
+
         id = _id;
+        identity = new Identity();
         
 		//probabilities
         //gender M-F
@@ -176,16 +180,17 @@ public class Agent {
         float religious_fundamentalism = 0f; //- to 1
         float politics = UnityEngine.Random.value - 0.5f; //-1 = very cons, 1 = very lib
         float ethnicity = 0f;
-        float gender = UnityEngine.Random.value - 0.5f;
-        float classPref = UnityEngine.Random.value - 0.5f;
-        float nationalityPref = UnityEngine.Random.value - 0.5f;
+        float gender = 2f*UnityEngine.Random.value - 1f;
+        float classPref = 2f*UnityEngine.Random.value - 1f;
+        float nationalityPref = 2f*UnityEngine.Random.value - 1f;
         for (int i = 0; i < 5; ++i)
         {
-            religiosity += personality[i] * correlation_religiosity[i];
-            religious_fundamentalism += personality[i] * correlation_religious_fundamentalism[i];
-            politics += personality[i] * correlation_politics[i];
+            religiosity += personality[i] * 5f*correlation_religiosity[i];
+            religious_fundamentalism += personality[i] * 5f*correlation_religious_fundamentalism[i];
+            politics += personality[i] * 5f*correlation_politics[i];
         }
         religiosity = clamp(religiosity);
+        religious_fundamentalism = clamp(5f*religious_fundamentalism)/5f;
         politics = clamp(politics);
 
 
@@ -222,33 +227,51 @@ public class Agent {
             else
                 identity.pref_class[i] = -classPref;
 
-        identity.pref_nationality = new float[1];
-        for (int i = 0; i < 1; i++)
+        identity.pref_nationality = new float[13];
+        for (int i = 0; i < identity.pref_nationality.Length; i++)
             if ((eNationality)i == identity.n)
                 identity.pref_nationality[i] = nationalityPref;
             else
                 identity.pref_nationality[i] = -nationalityPref;
 
-        identity.pref_political = new float[1];
-        identity.pref_political[0] = politics;
+        identity.pref_political = new float[4];
+        if (politics < 0)//conservative/facist
+            identity.p = (ePolitics)(2*randomProba(new float[]{0.75f,0.25f }));
+        else //liberal/communist
+            identity.p = (ePolitics)(2 * randomProba(new float[] { 0.75f, 0.25f }))+1;
+        for (int i = 0; i < identity.pref_political.Length; i++)
+            if ((ePolitics)i == identity.p)
+                identity.pref_political[i] = Math.Abs(politics);
+            else
+                identity.pref_political[i] = -Math.Abs(politics);
 
-        /*Debug.Log(age);
-        Debug.Log(identity.g);
-        Debug.Log(identity.ra);
-        Debug.Log(identity.r);
-        Debug.Log("Ext: " + personality[0]);
-        Debug.Log("Agr: " + personality[1]);
-        Debug.Log("Con: " + personality[2]);
-        Debug.Log("Neu: " + personality[3]);
-        Debug.Log("Ope: " + personality[4]);
-        Debug.Log("relig :" + religiosity);
-        Debug.Log("funda :" + religious_fundamentalism);
-        Debug.Log("poli :" +politics);
-        Debug.Log(" ");*/
-        
         followingList = new List<int>();
+        int numFollowers = UnityEngine.Random.Range(1, MAX_FOLLOWERS);
+        for (int i = 0; i < numFollowers; ++i)
+        {
+            int f = UnityEngine.Random.Range(0, Generator.NUMBER_OF_AGENTS);
+            //while (followingList.Contains(f))
+            //    f = UnityEngine.Random.Range(0, Generator.NUMBER_OF_AGENTS);
+            followingList.Add(f);
+        }
         tweetMade = new List<int>();
         readTweets= new List<int>();
+
+         /*Debug.Log(identity.age);
+         Debug.Log(identity.g);
+         Debug.Log(identity.ra);
+        Debug.Log(identity.r);
+        Debug.Log(identity.p);
+        Debug.Log("Ext: " + personality[0]);
+         Debug.Log("Agr: " + personality[1]);
+         Debug.Log("Con: " + personality[2]);
+         Debug.Log("Neu: " + personality[3]);
+         Debug.Log("Ope: " + personality[4]);
+         Debug.Log("relig :" + religiosity);
+         Debug.Log("funda :" + religious_fundamentalism);
+         Debug.Log("poli :" +politics);
+         Debug.Log("initial followers :" + numFollowers);
+         Debug.Log(" ");*/
     }
 
     public void ChangeState(State<Agent> state)
