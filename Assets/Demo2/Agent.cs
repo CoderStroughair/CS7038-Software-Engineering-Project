@@ -185,9 +185,9 @@ public class Agent {
         float nationalityPref = 2f*UnityEngine.Random.value - 1f;
         for (int i = 0; i < 5; ++i)
         {
-            religiosity += personality[i] * 5f*correlation_religiosity[i];
+            religiosity += personality[i] * 3f*correlation_religiosity[i];
             religious_fundamentalism += personality[i] * 5f*correlation_religious_fundamentalism[i];
-            politics += personality[i] * 5f*correlation_politics[i];
+            politics += personality[i] * correlation_politics[i];
         }
         religiosity = clamp(religiosity);
         religious_fundamentalism = clamp(5f*religious_fundamentalism)/5f;
@@ -250,14 +250,14 @@ public class Agent {
         for (int i = 0; i < numFollowers; ++i)
         {
             int f = UnityEngine.Random.Range(0, Generator.NUMBER_OF_AGENTS);
-            //while (followingList.Contains(f))
-            //    f = UnityEngine.Random.Range(0, Generator.NUMBER_OF_AGENTS);
+            while (f==id || followingList.Contains(f))
+                f = UnityEngine.Random.Range(0, Generator.NUMBER_OF_AGENTS);
             followingList.Add(f);
         }
         tweetMade = new List<int>();
         readTweets= new List<int>();
 
-         /*Debug.Log(identity.age);
+         Debug.Log(identity.age);
          Debug.Log(identity.g);
          Debug.Log(identity.ra);
         Debug.Log(identity.r);
@@ -271,7 +271,7 @@ public class Agent {
          Debug.Log("funda :" + religious_fundamentalism);
          Debug.Log("poli :" +politics);
          Debug.Log("initial followers :" + numFollowers);
-         Debug.Log(" ");*/
+         Debug.Log(" ");
     }
 
     public void ChangeState(State<Agent> state)
