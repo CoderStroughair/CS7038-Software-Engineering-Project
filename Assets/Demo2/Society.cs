@@ -12,15 +12,9 @@ public class Society : MonoBehaviour {
 
         tweets = new List<Tweet>();
         agents = new List<Agent>();
-        for(int i=0;i<10;i++)
+        for(int i=0;i<100;i++)
         {
             agents.Add(new Agent(i));
-
-            for (int j = 0; j < 10; j++)
-            {
-                if (i != j)
-                    agents[i].followingList.Add(j);
-            }
         }
         StartCoroutine("LinearTime");
         /*
@@ -46,19 +40,19 @@ public class Society : MonoBehaviour {
     }
     void round() {
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 100; i++)
         {
             agents[i].MakeTweet(ref tweets);
         }
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 100; i++)
         {
             agents[i].ReadNewsFeed(agents, ref tweets);
         }
 
         for (int i = 0; i < tweets.Count; i++)
         {
-            Debug.Log(tweets[i].religion + " " + tweets[i].text + " " + tweets[i].likes);
+            Debug.Log(tweets[i].identity.r + " " + tweets[i].text + " " + tweets[i].likes);
         }
     }
 

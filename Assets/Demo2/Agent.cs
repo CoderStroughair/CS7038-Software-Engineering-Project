@@ -179,18 +179,18 @@ public class Agent {
         float religiosity = UnityEngine.Random.value - 0.5f; //- to 1
         float religious_fundamentalism = 0f; //- to 1
         float politics = UnityEngine.Random.value - 0.5f; //-1 = very cons, 1 = very lib
-        float ethnicity = 0f;
+        float ethnicity = 2*UnityEngine.Random.value - 1f;
         float gender = 2f*UnityEngine.Random.value - 1f;
         float classPref = 2f*UnityEngine.Random.value - 1f;
         float nationalityPref = 2f*UnityEngine.Random.value - 1f;
         for (int i = 0; i < 5; ++i)
         {
             religiosity += personality[i] * 3f*correlation_religiosity[i];
-            religious_fundamentalism += personality[i] * 5f*correlation_religious_fundamentalism[i];
+            religious_fundamentalism += personality[i] * 10f*correlation_religious_fundamentalism[i];
             politics += personality[i] * correlation_politics[i];
         }
         religiosity = clamp(religiosity);
-        religious_fundamentalism = clamp(5f*religious_fundamentalism)/5f;
+        religious_fundamentalism = clamp(religious_fundamentalism);
         politics = clamp(politics);
 
 
@@ -203,7 +203,7 @@ public class Agent {
             if ((eReligion)i == identity.r)
                 identity.pref_religion[i] = atheist*religiosity;
             else
-                identity.pref_religion[i] = -5f*religious_fundamentalism;
+                identity.pref_religion[i] = -atheist*religious_fundamentalism * Math.Abs(atheist * religiosity);
         }
 
         identity.pref_ethnicity = new float[probaRace.Length];
@@ -257,7 +257,7 @@ public class Agent {
         tweetMade = new List<int>();
         readTweets= new List<int>();
 
-         Debug.Log(identity.age);
+        /* Debug.Log(identity.age);
          Debug.Log(identity.g);
          Debug.Log(identity.ra);
         Debug.Log(identity.r);
@@ -271,7 +271,7 @@ public class Agent {
          Debug.Log("funda :" + religious_fundamentalism);
          Debug.Log("poli :" +politics);
          Debug.Log("initial followers :" + numFollowers);
-         Debug.Log(" ");
+         Debug.Log(" ");*/
     }
 
     public void ChangeState(State<Agent> state)
@@ -287,11 +287,46 @@ public class Agent {
 
     public void MakeTweet(ref List<Tweet> tweets)
     {
-        Tweet tweet = new Tweet(id,"im a unicorn", identity.c, identity.r);
+        Tweet tweet = new Tweet(id,"im a unicorn", identity);
         tweets.Add(tweet);
         tweetMade.Add(tweets.Count-1);//id of tweet
     }
 
+    public float OpinionAbout(Tweet t) //return value from -1 to 1, how much the agent likes the tweet
+    {
+        float opinion_religion = 0f;
+        float opinion_ethnicity = 0f;
+        float opinion_gender = 0f;
+        float opinion_class = 0f;
+        float opinion_nationality = 0f;
+        float opinion_political = 0f;
+        float opinion_poster = 0f;
+        for (int i = 0; i < identity.pref_religion.Length; ++i)
+            opinion_religion += identity.pref_religion[i] * t.identity.pref_religion[i];
+        opinion_religion /= identity.pref_religion.Length;
+        for (int i = 0; i < identity.pref_ethnicity.Length; ++i)
+            opinion_ethnicity += identity.pref_ethnicity[i] * t.identity.pref_ethnicity[i];
+        opinion_ethnicity /= identity.pref_ethnicity.Length;
+        for (int i = 0; i < identity.pref_gender.Length; ++i)
+            opinion_gender += identity.pref_gender[i] * t.identity.pref_gender[i];
+        opinion_gender /= identity.pref_gender.Length;
+        for (int i = 0; i < identity.pref_class.Length; ++i)
+            opinion_class += identity.pref_class[i] * t.identity.pref_class[i];
+        opinion_class /= identity.pref_class.Length;
+        for (int i = 0; i < identity.pref_nationality.Length; ++i)
+            opinion_nationality += identity.pref_nationality[i] * t.identity.pref_nationality[i];
+        opinion_nationality /= identity.pref_nationality.Length;
+        for (int i = 0; i < identity.pref_political.Length; ++i)
+            opinion_political += identity.pref_political[i] * t.identity.pref_political[i];
+        opinion_political /= identity.pref_political.Length;
+        opinion_poster = (identity.pref_religion[(int)t.identity.r] 
+            + identity.pref_ethnicity[(int)t.identity.ra] 
+            + identity.pref_gender[(int)t.identity.g] 
+            + identity.pref_class[(int)t.identity.c] 
+            + identity.pref_nationality[(int)t.identity.n] 
+            + identity.pref_political[(int)t.identity.p])/6f;
+        return (opinion_poster + (opinion_religion + opinion_ethnicity + opinion_gender + opinion_class + opinion_nationality + opinion_political) / 6f) / 2f;
+    }
 
     public void ReadNewsFeed(List<Agent> agents,ref List<Tweet> tweets)
     {
@@ -315,7 +350,7 @@ public class Agent {
                 if (isFound)
                     continue;
 
-                if (tweets[t].religion == identity.r)
+                if (OpinionAbout(tweets[t]) > 0.2f)
                     tweets[t].LikeTweet();
                 
                 readTweets.Add(t);

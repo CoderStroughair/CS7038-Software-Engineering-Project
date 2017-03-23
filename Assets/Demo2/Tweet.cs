@@ -10,16 +10,16 @@ public class Tweet {
     public List<string> hashtags;
     public List<int> _at;
 
-    public eClass socialClass;
+    /*public eClass socialClass;
     public eReligion religion;
+    */
+    public Identity identity;
 
-
-    public Tweet(int _posterId,string _text,eClass _socialClass,eReligion _religion)
+    public Tweet(int _posterId,string _text,Identity _identity)
     {
         posterId = _posterId;
         text = _text;
-        socialClass = _socialClass;
-        religion = _religion;
+        identity = _identity;
     }
 
     public void LikeTweet()
