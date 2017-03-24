@@ -292,6 +292,13 @@ public class Agent {
         tweetMade.Add(tweets.Count-1);//id of tweet
     }
 
+    float sumOfAbs(float[] t)
+    {
+        float sum = 0f;
+        for (int i = 0; i < t.Length; ++i)
+            sum += Math.Abs(t[i]);
+        return sum;
+    }
     public float OpinionAbout(Tweet t) //return value from -1 to 1, how much the agent likes the tweet
     {
         float opinion_religion = 0f;
@@ -303,30 +310,39 @@ public class Agent {
         float opinion_poster = 0f;
         for (int i = 0; i < identity.pref_religion.Length; ++i)
             opinion_religion += identity.pref_religion[i] * t.identity.pref_religion[i];
-        opinion_religion /= identity.pref_religion.Length;
+        opinion_religion /= sumOfAbs(identity.pref_religion);
         for (int i = 0; i < identity.pref_ethnicity.Length; ++i)
             opinion_ethnicity += identity.pref_ethnicity[i] * t.identity.pref_ethnicity[i];
-        opinion_ethnicity /= identity.pref_ethnicity.Length;
+        opinion_ethnicity /=  sumOfAbs(identity.pref_ethnicity);
         for (int i = 0; i < identity.pref_gender.Length; ++i)
             opinion_gender += identity.pref_gender[i] * t.identity.pref_gender[i];
-        opinion_gender /= identity.pref_gender.Length;
+        opinion_gender /= sumOfAbs(identity.pref_gender);
         for (int i = 0; i < identity.pref_class.Length; ++i)
             opinion_class += identity.pref_class[i] * t.identity.pref_class[i];
-        opinion_class /= identity.pref_class.Length;
+        opinion_class /= sumOfAbs(identity.pref_class);
         for (int i = 0; i < identity.pref_nationality.Length; ++i)
             opinion_nationality += identity.pref_nationality[i] * t.identity.pref_nationality[i];
-        opinion_nationality /= identity.pref_nationality.Length;
+        opinion_nationality /= sumOfAbs(identity.pref_nationality);
         for (int i = 0; i < identity.pref_political.Length; ++i)
             opinion_political += identity.pref_political[i] * t.identity.pref_political[i];
-        opinion_political /= identity.pref_political.Length;
+        opinion_political /= sumOfAbs(identity.pref_political);
         opinion_poster = (identity.pref_religion[(int)t.identity.r] 
             + identity.pref_ethnicity[(int)t.identity.ra] 
             + identity.pref_gender[(int)t.identity.g] 
             + identity.pref_class[(int)t.identity.c] 
             + identity.pref_nationality[(int)t.identity.n] 
-            + identity.pref_political[(int)t.identity.p])/6f;
+            + identity.pref_political[(int)t.identity.p])/sumOfAbs(new float[]{identity.pref_religion[(int)t.identity.r],
+                identity.pref_ethnicity[(int)t.identity.ra],
+                identity.pref_gender[(int)t.identity.g],
+                identity.pref_class[(int)t.identity.c],
+                identity.pref_nationality[(int)t.identity.n],
+                identity.pref_political[(int)t.identity.p] });
         return (opinion_poster + (opinion_religion + opinion_ethnicity + opinion_gender + opinion_class + opinion_nationality + opinion_political) / 6f) / 2f;
     }
+    public void likeTweet(int t, ref List<Tweet> tweets) { }
+    public void follow(int t, ref List<Tweet> tweets) { }
+    public void unfollow(int t, ref List<Tweet> tweets) { }
+    public void retweet(int t, ref List<Tweet> tweets) { }
 
     public void ReadNewsFeed(List<Agent> agents,ref List<Tweet> tweets)
     {
@@ -350,7 +366,7 @@ public class Agent {
                 if (isFound)
                     continue;
 
-                if (OpinionAbout(tweets[t]) > 0.2f)
+                if (OpinionAbout(tweets[t]) > 0.3f)
                     tweets[t].LikeTweet();
                 
                 readTweets.Add(t);

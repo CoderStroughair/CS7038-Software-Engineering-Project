@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class Tweet {
     public int posterId;
+    public List<int> reposterIds;
     public string text;
     public int likes;
 
@@ -18,6 +19,7 @@ public class Tweet {
     public Tweet(int _posterId,string _text,Identity _identity)
     {
         posterId = _posterId;
+        reposterIds = new List<int>();
         text = _text;
         identity = _identity;
     }
