@@ -10,10 +10,15 @@ public class Agent {
     
 
     public float[] personality;
-    public int[] following;
+    //public int[] following;
     public string name;
     public int[] tweetsMade;
     public int[] tweetsRead;
+    int id;
+    private FSM<Agent> stateMachine;
+    public List<int> followingList;
+    List<int> tweetMade;
+    List<int> readTweets;
 
     public Identity identity;
 
@@ -26,14 +31,7 @@ public class Agent {
     {
         identity.prepEnumStrings();
     }
-
-    int id;
-    private FSM<Agent> stateMachine;
-    public List<int> followingList;
-    List<int> tweetMade;
-    List<int> readTweets;
-
-    //variables
+    
 
     static NameDatabase names;
 
@@ -339,10 +337,20 @@ public class Agent {
                 identity.pref_political[(int)t.identity.p] });
         return (opinion_poster + (opinion_religion + opinion_ethnicity + opinion_gender + opinion_class + opinion_nationality + opinion_political) / 6f) / 2f;
     }
-    public void likeTweet(int t, ref List<Tweet> tweets) { }
-    public void follow(int t, ref List<Tweet> tweets) { }
-    public void unfollow(int t, ref List<Tweet> tweets) { }
-    public void retweet(int t, ref List<Tweet> tweets) { }
+    public void likeTweet(int t, ref List<Tweet> tweets)
+    {
+        tweets[t].LikeTweet();
+    }
+    public void follow(int t, ref List<Tweet> tweets)
+    {
+        followingList.Add(tweets[t].posterId);
+    }
+    public void unfollow(int t, ref List<Tweet> tweets) {
+        followingList.Remove(tweets[t].posterId);
+    }
+    public void retweet(int t, ref List<Tweet> tweets) {
+        tweets[t].reposterIds.Add(id);
+    }
 
     public void ReadNewsFeed(List<Agent> agents,ref List<Tweet> tweets)
     {
